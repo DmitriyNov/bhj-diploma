@@ -1,17 +1,15 @@
-/**
- * Класс TransactionsPage управляет
- * страницей отображения доходов и
- * расходов конкретного счёта
- * */
 class TransactionsPage {
-  /**
-   * Если переданный элемент не существует,
-   * необходимо выкинуть ошибку.
-   * Сохраняет переданный элемент и регистрирует события
-   * через registerEvents()
-   * */
-  constructor( element ) {
-
+  constructor(element) {
+    try {
+      if (element) {
+        this.element = element;
+        this.registerEvents();
+      } else {
+        throw new Error('В конструктор класса TransactionsPage не был передан элемент');
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   /**
@@ -21,14 +19,19 @@ class TransactionsPage {
 
   }
 
-  /**
-   * Отслеживает нажатие на кнопку удаления транзакции
-   * и удаления самого счёта. Внутри обработчика пользуйтесь
-   * методами TransactionsPage.removeTransaction и
-   * TransactionsPage.removeAccount соответственно
-   * */
   registerEvents() {
-
+    const accounts = this.element.querySelectorAll('.remove-account');
+    const transactions = this.element.querySelectorAll('.transaction__remove');
+    accounts.forEach(function (element) {
+      element.addEventListener('click', () => {
+        this.removeAccount();
+      })
+    });
+    transactions.forEach(function (element) {
+      element.addEventListener('click', () => {
+        this.removeTransaction(element.dataset.id);
+      })
+    });
   }
 
   /**
@@ -50,7 +53,7 @@ class TransactionsPage {
    * По удалению транзакции вызовите метод App.update(),
    * либо обновляйте текущую страницу (метод update) и виджет со счетами
    * */
-  removeTransaction( id ) {
+  removeTransaction(id) {
 
   }
 
@@ -61,7 +64,27 @@ class TransactionsPage {
    * в TransactionsPage.renderTransactions()
    * */
   render(options){
-
+    if (!options) {
+      console.log('В метод render класса TransactionsPage не был передан аргумент');
+      return;
+    }
+    this.lastOptions = options;
+    Account.get(options['account_id'], function (error, response) {
+      if (response.success) {
+        console.log(this);
+        this.renderTitle(response.data.name);
+      } else {
+        console.log(error);
+      }
+    });
+    Transaction.list(null, function (error, response) {
+      if (response.success) {
+        console.log(this);
+        this.renderTransactions();
+      } else {
+        console.log(error);
+      }
+    });
   }
 
   /**

@@ -2,7 +2,8 @@ class User {
   static URL = '/user';
 
   static setCurrent(user) {
-    localStorage.user = user;
+    const string = JSON.stringify(user)
+    localStorage.user = string;
   }
 
   static unsetCurrent() {
@@ -10,7 +11,7 @@ class User {
   }
 
   static current() {
-    return localStorage.user;
+    return JSON.parse(localStorage.user);
   }
 
   static fetch(callback) {
@@ -19,25 +20,26 @@ class User {
       method: 'GET',
       callback: (err, response) => {
         if (response.success) {
-          this.setCurrent(response.user);
+          User.setCurrent(response.user);
         } else {
-          this.unsetCurrent();
+          User.unsetCurrent();
         }
-        callback(err, response); // Не уверен, что всё правильно сделал
-      }
+        callback(err, response);
+      },
     });
   }
 
-  // Метод ниже уже был написан, так и нужно?
+  // Метод ниже уже был написан
   static login(data, callback) {
+    /// Нужно здесь делать проверку на соответствие агрумента data?
     createRequest({
       url: this.URL + '/login',
       method: 'POST',
-      responseType: 'json',
+      responseType: 'json', // Зачем нужно это свойство, если у нас в createRequest уже по умолчанию это?
       data,
       callback: (err, response) => {
         if (response && response.user) {
-          this.setCurrent(response.user);
+          User.setCurrent(response.user);
         }
         callback(err, response);
       }
@@ -45,13 +47,14 @@ class User {
   }
 
   static register(data, callback) {
+    /// Нужно здесь делать проверку на соответствие агрумента data?
     createRequest({
       url: this.URL + '/register',
       method: 'POST',
       data,
       callback: (err, response) => {
         if (response.success) {
-          this.setCurrent(response.user);
+          User.setCurrent(response.user);
         }
         callback(err, response);
       }
@@ -64,7 +67,7 @@ class User {
       method: 'POST',
       callback: (err, response) => {
         if (response.success) {
-          this.unsetCurrent();
+          User.unsetCurrent();
         }
         callback(err, response);
       }

@@ -19,7 +19,7 @@ class Entity {
     });
   }
 
-  static remove(data, callback ) {
+  static remove(data, callback) {
     createRequest({
       url: this.URL,
       data: data,
