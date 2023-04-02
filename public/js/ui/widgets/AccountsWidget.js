@@ -4,7 +4,6 @@ class AccountsWidget {
       if (element) {
         this.element = element;
         this.update();
-        this.registerEvents();
       } else {
         throw new Error('В конструктор класса AccountsWidget не был передан элемент');
       }
@@ -15,17 +14,13 @@ class AccountsWidget {
 
   registerEvents() {
     const createButton = this.element.querySelector('.create-account');
-    console.log(this.element);
     const accounts = document.querySelectorAll('.account');
-    console.log(accounts);
-    // Я вообще не понимаю, что здесь не так. Почему-то в accounts пустой нод-лист, в консоли этот код работает.
     createButton.addEventListener('click', () => {
       App.getModal('createAccount').open();
     });
     accounts.forEach(function (element) {
       element.addEventListener('click', (event) => {
-        // не знаю, как вызвать здесь этот метод, только забиндить?
-        this.onSelectAccount(event.currentTarget);
+        App.getWidget('accounts').onSelectAccount(event.currentTarget);
       })
     });
   }
@@ -39,6 +34,8 @@ class AccountsWidget {
           response.data.forEach(function (element) {
             App.getWidget('accounts').renderItem(element);
           });
+          // В общем, я немного пошёл в разрез с заданием, там нужно было вызывать registerEvents в конструкторе, я делаю здесь, после рендера списка счетов
+          App.getWidget('accounts').registerEvents();
         } else {
           console.log(error);
         }
