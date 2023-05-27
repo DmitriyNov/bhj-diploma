@@ -15,8 +15,9 @@ class TransactionsPage {
   update() {
     if (this.lastOptions) {
       this.render(this.lastOptions);
+    } else {
+      this.render();
     }
-    this.render();
   }
 
   registerEvents() {
@@ -74,7 +75,7 @@ class TransactionsPage {
         console.log(error);
       }
     });
-    // Сначала мучался c тем, что от сервера приходит ответ с пучтым массивом в date, оказалось нужно передавать в Transaction.list не значение account_id, а весь объект options
+    // Сначала мучался c тем, что от сервера приходит ответ с пуcтым массивом в date, оказалось нужно передавать в Transaction.list не значение account_id, а весь объект options
     // Почему в этом классе так, а в Account.get нухно передавать не объект, а значение?
     Transaction.list(options, function (error, response) {
       if (response.success) {

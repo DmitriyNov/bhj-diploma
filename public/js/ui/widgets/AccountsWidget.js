@@ -3,6 +3,7 @@ class AccountsWidget {
     try {
       if (element) {
         this.element = element;
+        this.registerEvents();
         this.update();
       } else {
         throw new Error('В конструктор класса AccountsWidget не был передан элемент');
@@ -14,15 +15,15 @@ class AccountsWidget {
 
   registerEvents() {
     const createButton = this.element.querySelector('.create-account');
-    const accounts = document.querySelectorAll('.account');
     createButton.addEventListener('click', () => {
       App.getModal('createAccount').open();
     });
-    accounts.forEach(function (element) {
-      element.addEventListener('click', (event) => {
-        App.getWidget('accounts').onSelectAccount(event.currentTarget);
-      })
-    });
+    this.element.addEventListener('click', (event) => {
+      const curentAccount = event.target.closest('.account');
+      if (curentAccount) {
+        App.getWidget('accounts').onSelectAccount(curentAccount);
+      }
+    })
   }
   
 
@@ -34,8 +35,6 @@ class AccountsWidget {
           response.data.forEach(function (element) {
             App.getWidget('accounts').renderItem(element);
           });
-          // В общем, я немного пошёл в разрез с заданием, там нужно было вызывать registerEvents в конструкторе, я делаю здесь, после рендера списка счетов
-          App.getWidget('accounts').registerEvents();
         } else {
           console.log(error);
         }
