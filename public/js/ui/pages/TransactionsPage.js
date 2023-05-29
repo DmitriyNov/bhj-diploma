@@ -134,6 +134,5 @@ class TransactionsPage {
     data.forEach((item) => {
       content.insertAdjacentHTML('beforeend', this.getTransactionHTML(item));
     });
-    this.registerEvents();
   }
 }
